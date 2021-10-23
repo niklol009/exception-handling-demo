@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	<flow name="for-eachFlow" doc:id="ec028be6-f005-46b7-8de2-89ad3ee24dc3" >
+		<http:listener doc:name="Listener" doc:id="1163f831-dca6-4be6-b905-1a177279c0a4" config-ref="HTTP_Listener_config" path="/for-each" allowedMethods="POST"/>
+		<set-variable value="#[payload]" doc:name="inputPayload" doc:id="c3ef34a0-ad77-4be0-b938-9700f2ca6843" variableName="inputPayload" />
+		<ee:transform doc:name="Transform Message" doc:id="6b726a6d-36d6-4503-8e9e-ab4ac9b5ca14" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="varErrorRecords" ><![CDATA[%dw 2.0
+output application/json
+---
+[]]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<set-payload value='#["Success - Started Flow"]' doc:name="Success - Started Flow" doc:id="839841df-db3c-41de-9567-a54f9e3160b0" />
+		<foreach doc:name="For Each" doc:id="778b56fb-19bc-4011-aa78-23d76bfd566e" collection="#[vars.inputPayload]">
+			<try doc:name="Try" doc:id="633364e7-5616-49a0-a6cf-3004c54a2799" >
+				<validation:is-not-blank-string doc:name="Is not blank string" doc:id="c823e5e8-aebf-4218-bb71-d0980692cf16" value="#[payload.employee_name]" message='#["employee_name cannot be empty"]' />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="9e8163f0-748f-48d6-a9da-d447eefba10f" >
+						<logger level="INFO" doc:name="Log Error Record" doc:id="77dd719f-1782-4c49-b75d-1b45e2c243e8" message="#[payload]" />
+						<ee:transform doc:name="Transform Message" doc:id="b2dd8db3-6f33-4d5d-ba05-87eeebe9c4ef">
+							<ee:message>
+							</ee:message>
+							<ee:variables>
+								<ee:set-variable variableName="varErrorRecords"><![CDATA[%dw 2.0
+output application/json
+---
+vars.varErrorRecords + payload]]></ee:set-variable>
+							</ee:variables>
+						</ee:transform>
+					</on-error-continue>
+				</error-handler>
+			</try>
+		</foreach>
+		<logger level="INFO" doc:name="Logger" doc:id="12b8c7a9-a6d1-4d34-b029-88472f2e1110" message="#[vars.varErrorRecords]"/>
+		<set-payload value='#["Success - Finished Flow"]' doc:name="Success - Finished Flow" doc:id="e940c952-5853-4260-ba82-6b984d2faefb" />
+	</flow>
+</mule>

@@ -1,0 +1,79 @@
+# ------------------------------------------------------------------------------ #
+# Java defaults (https://github.com/github/gitignore/blob/master/Java.gitignore) #
+# ------------------------------------------------------------------------------ #
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# ------------------------------------------------------------------------------------------- #
+# Eclipse-specific (https://github.com/github/gitignore/blob/master/Global/Eclipse.gitignore) #
+# ------------------------------------------------------------------------------------------- #
+*.pydevproject
+.metadata
+bin/**
+tmp/**
+tmp/**/*
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.project
+.classpath
+
+# External tool builders
+.externalToolBuilders/
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# CDT-specific
+.cproject
+
+# PDT-specific
+.buildpath
+
+# --------------- #
+# Studio-specific #
+# --------------- #
+target/
+.mule/**
+.mule/**/*
+mulesoft/.mule/**
+mulesoft/.mule/**/*
+.DS_Store
+velocity.log
+
+# ------ #
+# Legacy #
+# ------ #
+*.sw*
+*~
+build/
+dist/
+node_modules/
+vendor/
+webroot/
+tmp/
+temp/
+log/
+logs/
+/workspace/
+/cache/
+coverage/
+.idea
+.vscode
+*.iml
+api.log
+npm-debug.log
+
+# --------- #
+# New Relic #
+# --------- #
+newrelic.log
+newrelic_agent.log

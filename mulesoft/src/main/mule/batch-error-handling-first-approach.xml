@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	<flow name="batch-error-handling-first-approach" doc:id="a2ae793f-b230-4a9f-84ab-4cb148b091f1" >
+		<http:listener doc:name="Listener" doc:id="916f4684-724d-4c65-8bce-798a6c0eeaf7" config-ref="HTTP_Listener_config" path="/batch-error-handling-first-approach" allowedMethods="POST">
+			<http:error-response statusCode="#[error.cause.errorMessage.attributes.statusCode]">
+				<http:body ><![CDATA[#[output application/json --- payload]]]></http:body>
+			</http:error-response>
+		</http:listener>
+		<batch:job jobName="batch-error-handlingBatch_Job" doc:id="d4aeac8c-c620-4a2a-8412-38986668dca0" maxFailedRecords="100">
+			<batch:process-records >
+				<batch:step name="Batch_Step_Success_Records" doc:id="0ac1ccf3-cb2d-4b94-b3e5-82b68b6d5acf" acceptPolicy="ALL">
+					<validation:is-not-blank-string doc:name="Is not blank string" doc:id="18c2f908-9d68-471a-8324-da23f94d9d31" value="#[payload.employee_name]" message='#["employee_name cannot be empty"]' />
+				</batch:step>
+				 <batch:step name="Batch_Step_Failure_Records" doc:id="396325ff-701e-489a-bba9-43021bbd9545" acceptPolicy="ONLY_FAILURES">
+					<logger level="INFO" doc:name="Log Error Records" doc:id="5d2bf3a0-498c-47a1-846c-347033bdd18e" message="#[payload]"/>
+				</batch:step> 
+			</batch:process-records>
+			<batch:on-complete >
+				<logger level="INFO" doc:name="On Complete" doc:id="7d994a72-2cfc-4896-aa50-bb5c3103a282" message="#[payload]"/>
+			</batch:on-complete>
+		</batch:job>
+		<ee:transform doc:name="Transform Message" doc:id="ec70b18a-c32b-49e2-8066-f946f0ee8793" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

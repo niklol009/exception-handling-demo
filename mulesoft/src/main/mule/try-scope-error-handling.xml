@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	<flow name="try-scope-error-handling-flows" doc:id="b8ed5734-6d91-450c-b01a-5d5fb327a6eb" >
+		<http:listener doc:name="Listener" doc:id="ae621b18-ef9a-403d-843c-aa71c20ee759" config-ref="HTTP_Listener_config" path="/try-catch-exception-handling">
+			<http:error-response statusCode="#[error.cause.errorMessage.attributes.statusCode]">
+				<http:body ><![CDATA[#[output application/json --- payload]]]></http:body>
+			</http:error-response>
+		</http:listener>
+		<set-variable value="#[payload]" doc:name="inputPayload" doc:id="1062e100-f3e8-48b3-8ea0-2b379085d4d4" variableName="inputPayload"/>
+		<set-payload value='#["Success - Started Flow"]' doc:name="Success - Started Flow" doc:id="f7f2c985-077f-47be-ba33-6d6b97fc37fe" />
+		<try doc:name="Try" doc:id="9ed68367-dbd2-402f-b76d-7840a667e34d" >
+			<until-successful maxRetries="5" doc:name="Until Successful" doc:id="e0be6f17-a372-482b-a102-7220773de108" >
+				<validation:is-number numberType="INTEGER" doc:name="Is number" doc:id="b1dda14a-1ddb-4e6b-9cfb-c82c8e370c5f" message='#["employee_id type mismatch"]' value='#[vars.inputPayload."employee_id"]' minValue="1" maxValue="1000" />
+			</until-successful>
+			<set-payload value='#["Success - Finished Try Scope"]' doc:name="Success - Finished Try Scope" doc:id="635407e7-aa29-4626-a1a1-9b27964cb8bc" />
+			<error-handler >
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="c07daea7-fd45-41c1-97d9-9034eddc82be" type="ANY">
+					<set-payload value='#["Error - Try Scope"]' doc:name="Error - Try Scope" doc:id="51d48aa0-2dc4-446c-8055-c874b8901c1e" />
+				</on-error-propagate>
+			</error-handler>
+		</try>
+		<set-payload value='#["Success - Finished Flow"]' doc:name="Success - Finished Flow" doc:id="ae95bb3e-3fe6-4b6e-89df-3850fafdc69a" />
+	
+</flow>
+	</mule>

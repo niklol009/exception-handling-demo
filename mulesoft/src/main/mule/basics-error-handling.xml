@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="basics-error-handlingFlow" doc:id="e27c339b-926e-47ab-af63-2b959c32ec05" >
+		<http:listener doc:name="Listener" doc:id="4af6f434-598a-4a07-b42a-61e19262f1f2" config-ref="HTTP_Listener_config" path="/basic-error-handling">
+			<http:error-response statusCode="#[error.errorMessage.attributes.statusCode]">
+				<http:body ><![CDATA[#[output application/json --- payload]]]></http:body>
+			</http:error-response>
+		</http:listener>
+		<set-variable value="#[payload]" doc:name="inputPayload" doc:id="da9cd8fb-e27c-4c86-88b4-30464171aeb1" variableName="inputPayload"/>
+		<set-payload value='#["Success - Started Flow"]' doc:name="Success - Started Flow" doc:id="1afc38f6-760f-4f8d-8c66-96bb86b9effe" />
+		<http:request method="GET" doc:name="REST API" doc:id="a3be8d81-1d27-4597-a22f-67bf25da308d" config-ref="HTTP_Request_configuration" path="/post"/>
+		<!--  <validation:is-not-blank-string doc:name="Is not blank string" doc:id="61e85cce-21be-44db-a0e5-1949e01b3e27" value='#[vars.inputPayload."employee_name"]' message='#["employee_id cannot be empty"]'/> -->
+		<set-payload value='#["Success - Finished Flow"]' doc:name="Success - Finished Flow" doc:id="d3242290-4e32-496b-b618-c64cd0e58ecf" />
+	</flow>
+</mule>

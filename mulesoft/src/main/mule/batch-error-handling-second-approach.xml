@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:batch="http://www.mulesoft.org/schema/mule/batch"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="batch-error-handling-second-approach" doc:id="b925006a-2b74-4a64-9458-92edcc099f45" >
+		<http:listener doc:name="Listener" doc:id="37628d55-6736-4927-b46f-b39767057e9b" config-ref="HTTP_Listener_config" path="/batch-error-handling-second-approach" allowedMethods="POST" >
+			<http:error-response statusCode="#[error.cause.errorMessage.attributes.statusCode]" >
+				<http:body ><![CDATA[#[output application/json --- payload]]]></http:body>
+			</http:error-response>
+		</http:listener>
+		<batch:job jobName="batch-error-handling-second-approachBatch_Job" doc:id="8a34100e-d15f-4272-a168-c65789ba8bf4" >
+			<batch:process-records >
+				<batch:step name="Batch_Step" doc:id="6b7f4781-d660-4e33-a6e2-747a99ffffbf" >
+					<try doc:name="Try" doc:id="af9e4556-1358-46f4-ab6b-6f3872d6f9e6" >
+						<validation:is-not-blank-string doc:name="Is not blank string" doc:id="d7b0624a-9e13-462f-8f35-6d68605fb551" value="#[payload.employee_name]" message='#["employee_name cannot be empty"]' />
+						<logger level="INFO" doc:name="Log Validation" doc:id="bd253648-43eb-4235-9dee-3684995673b4" />
+						<error-handler >
+							<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="eafabf8c-811d-4b9f-a2b9-e4b7599ec91d" >
+								<logger level="INFO" doc:name="Log Error Record" doc:id="c4c8309f-98a0-423d-80fc-1a968f12fd22" message="#[payload]"/>
+							</on-error-continue>
+						</error-handler>
+					</try>
+				</batch:step>
+			</batch:process-records>
+			<batch:on-complete >
+				<logger level="INFO" doc:name="Logger" doc:id="8dba785f-0361-4be2-87b8-fb117dd65b6f" message="#[payload]"/>
+			</batch:on-complete>
+		</batch:job>
+		<ee:transform doc:name="Transform Message" doc:id="ba423d79-98d7-4ba1-be4c-de34df9b59d9" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

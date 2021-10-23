@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="scatter-gather-error-handling-scenario-1-Flow" doc:id="07ba6af0-8e4e-4038-8607-855aa9d96e98" >
+		<http:listener doc:name="Listener" doc:id="62e4e71f-b0ba-406c-81fc-a82983376ee9" config-ref="HTTP_Listener_config" path="/scatter-gather-first-approach" allowedMethods="POST" />
+		<set-payload value="#[payload]" doc:name="" doc:id="bc0b4b07-6d8c-4cdc-8831-8dd3beaa18a0" />
+		<set-variable value="#[payload.employee_name]" doc:name="employeeName" doc:id="913ea508-ed36-4809-b5fc-a247ae95f504" variableName="employeeName" />
+		<set-variable value='#[payload."employee_id"]' doc:name="employeeId" doc:id="f9708ee6-54f1-45db-9668-1ccc2797f84f" variableName="employeeId" />
+		<scatter-gather doc:name="Scatter-Gather" doc:id="1e0f9ca8-c093-46df-913c-2aa81dafbe32" >
+			<route >
+				<try doc:name="Try" doc:id="c7f4484d-d4fd-4674-b94b-8792e68f4a24" >
+					<validation:is-not-blank-string doc:name="Is not blank string" doc:id="bafe80e0-b9d5-4208-9f1a-040d51f0f0ae" value="#[vars.employeeName]" message='#["employee_name cannot be empty"]' />
+					<ee:transform doc:name="Transform Message" doc:id="6f1dbdf1-f1ff-4a04-af5c-a4afc2f24d20" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+					<error-handler >
+						<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="e57c21fb-3ad3-4e55-8ced-a2fe0caccce8" >
+							<logger level="INFO" doc:name="Log Error Record" doc:id="2a569272-ee6d-48c3-9c55-503973719deb" message="#[payload]" />
+						</on-error-continue>
+					</error-handler>
+				</try>
+			</route>
+			<route >
+				<try doc:name="Try" doc:id="56e0cb95-8ff6-45b7-9ff0-e828cfd443d8" >
+					<validation:is-number numberType="INTEGER" doc:name="Is number" doc:id="3b206f19-71d1-405a-a223-0c11f88d97d1" value="#[vars.employeeId]" minValue="1" maxValue="1000" message='#["employee_id type mismatch"]' />
+					<ee:transform doc:name="Transform Message" doc:id="67ba2efc-0708-4a01-bcfd-4418b4494644" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+					<error-handler >
+						<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="8215a418-200b-4a8e-801d-5e45f920835e" >
+							<logger level="INFO" doc:name="Log Error Record" doc:id="31019725-7cd9-4378-947b-ef44cf967fbc" message="#[payload]" />
+						</on-error-propagate>
+					</error-handler>
+				</try>
+			</route>
+		</scatter-gather>
+		<ee:transform doc:name="Transform Message" doc:id="42af6999-5c38-45ad-9fca-1a25af8f07e3" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="43990da6-7bc7-4655-a3e4-121c3845c943" >
+				<set-payload value="#[output application/json --- error.errorMessage.payload]" doc:name="Set Payload" doc:id="bd17ead5-3ef6-401c-80d9-3abca93e4e83" />
+			</on-error-continue>
+		</error-handler>
+	</flow>
+</mule>

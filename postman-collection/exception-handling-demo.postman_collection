@@ -1,0 +1,345 @@
+{
+	"info": {
+		"_postman_id": "c24fdce0-a53f-4ea4-bc42-ffd2676606f6",
+		"name": "Guwahati-Meetup",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "flow-exception-handling",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"employee_id\" : 12,\r\n    \"employee_name\" : \"Mulesoft\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/flow-exception-handling",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"flow-exception-handling"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "basic-error-handling",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"employee_id\" : 12,\r\n    \"employee_name\" : \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/basic-error-handling",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"basic-error-handling"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "custom-error-handling",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"employee_id\" : 12,\r\n    \"employee_name\" : \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/raise_error",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"raise_error"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "dw-error-handling",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"employee_id\" : 12,\r\n    \"employee_name\" : \"Mulesoft\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/dw-error-handling",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"dw-error-handling"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "for-each-error-handling",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[{\r\n    \"employee_id\" : 12,\r\n    \"employee_name\" : \"\"\r\n},\r\n{\r\n    \"employee_id\" : 14,\r\n    \"employee_name\" : \"\"\r\n}]\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/for-each",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"for-each"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "batch-error-handling-first-approach",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[{\r\n    \"employee_id\" : 12,\r\n    \"employee_name\" : \"\"\r\n},\r\n{\r\n    \"employee_id\" : 14,\r\n    \"employee_name\" : \"\"\r\n}]\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/batch-error-handling-first-approach",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"batch-error-handling-first-approach"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "batch-error-handling-second-approach",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[{\r\n    \"employee_id\" : 12,\r\n    \"employee_name\" : \"\"\r\n},\r\n{\r\n    \"employee_id\" : 14,\r\n    \"employee_name\" : \"\"\r\n}]\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/batch-error-handling-first-approach",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"batch-error-handling-first-approach"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "try-catch-exception-handling",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"employee_id\" : 12,\r\n    \"employee_name\" : \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/try-catch-exception-handling",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"try-catch-exception-handling"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "parallel-for-each-handling",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[{\r\n    \"employee_id\" : 12,\r\n    \"employee_name\" : \"\"\r\n},\r\n{\r\n    \"employee_id\" : 14,\r\n    \"employee_name\" : \"\"\r\n}]\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/parallel-for-each",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"parallel-for-each"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "scatter-gather-first-approach-1",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"employee_id\" : 1.2,\r\n    \"employee_name\" : \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/scatter-gather-first-error",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"scatter-gather-first-error"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "scatter-gather-second-approach",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"employee_id\" : 12,\r\n    \"employee_name\" : \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/scatter-gather-second-approach",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"scatter-gather-second-approach"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "scatter-gather-error",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"employee_id\" : 12,\r\n    \"employee_name\" : \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/scatter-gather-error",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"scatter-gather-error"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	<flow name="parallel-for-eachFlow" doc:id="7003422e-542a-48b1-bc86-1e9b2b10c38e" >
+		<http:listener doc:name="Listener" doc:id="2f08ebe5-64f7-459d-b501-4a3597365f2d" config-ref="HTTP_Listener_config" path="/parallel-for-each"/>
+		<set-variable value="#[payload]" doc:name="inputPayload" doc:id="3a4db216-da86-45c1-8e76-6818894ea094" variableName="inputPayload" />
+		<set-payload value='#["Success - Started  Flow"]' doc:name="Success - Started  Flow" doc:id="aaaecbb6-5230-482c-a268-b0ed27b408c0" />
+		<parallel-foreach doc:name="Parallel For Each" doc:id="60ceaa28-b89d-44d3-a345-9b57a076b15d" collection="#[vars.inputPayload]">
+			<try doc:name="Try" doc:id="4ddf0136-10a8-4ec5-9deb-6a972d6c3ad0" >
+				<validation:is-not-blank-string doc:name="Is not blank string" doc:id="e21b9a73-66f5-4406-abe4-0d0606d14d5f" value="#[payload.employee_name]" message='#["employee_name cannot be empty"]' />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="5705c11b-506a-46d0-ad86-2666a9122917" >
+						<logger level="INFO" doc:name="Log Error Record" doc:id="c3a44c57-d670-4d49-a638-07e218544bce" message="#[payload]"/>
+					</on-error-continue>
+				</error-handler>
+			</try>
+		</parallel-foreach>
+		<set-payload value='#["Success - Finished  Flow"]' doc:name="Success - Finished  Flow" doc:id="c54f4087-bf4e-4aa7-95f7-3888d3ddaa72" />
+	</flow>
+</mule>

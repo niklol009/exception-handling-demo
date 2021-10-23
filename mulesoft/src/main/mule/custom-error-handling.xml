@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="raise-errorFlow" doc:id="960b5867-d6d2-4a03-b766-5c77f7efdbfb" >
+		<http:listener doc:name="Listener" doc:id="88992fc2-8b4f-4ed5-bb98-5247a686458b" config-ref="HTTP_Listener_config" path="/raise_error">
+			<http:error-response statusCode="#[vars.httpStatus default 500]" >
+				<http:body ><![CDATA[#[output application/json --- payload]]]></http:body>
+			</http:error-response>
+		</http:listener>
+		<set-variable value="#[payload]" doc:name="inputPayload" doc:id="c6b755a0-f8f3-4115-b1ed-c318146d2800" variableName="inputPayload" />
+		<set-payload value='#["Success - Started Flow"]' doc:name="Success - Started Flow" doc:id="8ac67f49-bf7e-4db7-ac97-0e8d9c1b53c2" />
+		<choice doc:name="Choice" doc:id="b37c886d-0ba0-4531-92a6-43d37b356f2d" >
+			<when expression="#[isEmpty(vars.inputPayload.employee_name)]">
+				<set-variable value="#[400]" doc:name="httpStatus" doc:id="72aeb690-f06d-4a8c-8b9f-47bedbb11e64" variableName="httpStatus"/>
+				<raise-error doc:name="Raise error" doc:id="322746dc-f2ba-489d-a5a1-af43599ced68" type="EMP: INVALID_RECORD" description="Invalid data - employee name cannot be empty"/>
+			</when>
+			<otherwise>
+				<set-payload value="#[vars.inputPayload.employee_name]" doc:name="Employee name is not empty" doc:id="9a7aded5-8308-4644-9831-2a5bfa658368" />
+			</otherwise>
+		</choice>
+		<set-payload value='#["Success - Finished Flow"]' doc:name="Success - Finished Flow" doc:id="87bfaad7-c8d8-4630-82ad-cfc56a282c7f" />
+	</flow>
+</mule>

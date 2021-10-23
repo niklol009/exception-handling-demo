@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="scatter-gather-error-handlingFlow" doc:id="1bcae395-03a6-4448-a467-b5d6d7562848" >
+		<http:listener doc:name="Listener" doc:id="8436f3e8-425b-439d-a71f-7e6972d06219" config-ref="HTTP_Listener_config" path="/scatter-gather-second-approach" allowedMethods="POST"/>
+		<set-payload value='#[payload]' doc:name="" doc:id="fd8ae23b-53a3-4cf3-8108-3bf98bc72e50" />
+		<set-variable value="#[payload.employee_name]" doc:name="employeeName" doc:id="a3610f8d-3e38-4e5b-a40c-a7541902a847" variableName="employeeName"/>
+		<set-variable value='#[payload."employee_id"]' doc:name="employeeId" doc:id="40bdad19-e8fb-4a03-93bb-33d14c1f598b" variableName="employeeId"/>
+		<scatter-gather doc:name="Scatter-Gather" doc:id="56667d8e-8a5f-4132-b6b7-b11605b44f83" >
+			<route >
+				<try doc:name="Try" doc:id="96c1923f-0356-4f35-af09-b18b7397d4c3" >
+					<validation:is-not-blank-string doc:name="Is not blank string" doc:id="2a203d26-a61c-419e-817e-ecf399d66d03" value="#[vars.employeeName]" message='#["employee_name cannot be empty"]' />
+					<ee:transform doc:name="Transform Message" doc:id="b469fbe8-c53d-4be5-be1b-921fd36d3cfc">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+					<error-handler >
+						<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="f30bd318-2a33-481a-a81f-22cc69380614" >
+							<logger level="INFO" doc:name="Log Error Record" doc:id="57e0043f-0169-42e2-ba8b-4d498a39e2aa" message="#[payload]"/>
+						</on-error-continue>
+					</error-handler>
+				</try>
+				
+			</route>
+			<route >
+				<try doc:name="Try" doc:id="87fbdc2c-88f8-4abc-8f72-7de41ce4e262" >
+					<validation:is-number numberType="INTEGER" doc:name="Is number" doc:id="5feaf4cd-2d4b-4159-b3c4-6688a1a9a703" value="#[vars.employeeId]" minValue="1" maxValue="1000" message='#["employee_id type mismatch"]' />
+					<ee:transform doc:name="Transform Message" doc:id="bbe5b69a-0b05-40a6-8c70-e3db5adbfd48">
+						<ee:message>
+							<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+					<error-handler >
+						<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="d2fe8107-3b9c-47e0-923d-1e0ed386cb22" >
+							<logger level="INFO" doc:name="Log Error Record" doc:id="8b0826bf-a6a1-45b2-8883-7b25b574bad1" message="#[payload]"/>
+						</on-error-continue>
+					</error-handler>
+				</try>
+				
+			</route>
+		</scatter-gather>
+		<ee:transform doc:name="Transform Message" doc:id="b1b771e9-cb6c-4aaf-9fd5-122fb110a9e9" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

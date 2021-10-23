@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="dw-level-error-handlingFlow" doc:id="55e8e384-29cf-483c-bb9f-da25f07beb8d" >
+		<http:listener doc:name="Listener" doc:id="088251d2-af07-400c-9f5d-56f4a4a82e8f" config-ref="HTTP_Listener_config" path="/dw-error-handling"/>
+		<set-variable value="#[payload]" doc:name="inputPayload" doc:id="a979abd6-4ec3-498e-b0e6-230ad0782479" variableName="inputPayload" />
+		<set-payload value='#["Success - Started Flow"]' doc:name="Success - Started Flow" doc:id="c26a7d87-aac1-441d-883a-344a05dc8d26" />
+		<ee:transform doc:name="dwCheck" doc:id="dfdce3c0-eb58-4fdb-9619-a4925821dfec" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+import * from dw::Runtime
+output application/json
+---
+if(isBlank(vars.inputPayload.employee_name)) fail('employee_name cannot be empty') else vars.inputPayload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<set-payload value='#["Success - Finished Flow"]' doc:name="Success - Finished Flow" doc:id="13baac3a-e509-4546-86dd-48909515fd4e" />
+	</flow>
+</mule>

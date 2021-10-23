@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="3c30faee-ffd1-45cb-bc79-4420d48002e7" >
+		<http:listener-connection host="localhost" port="8081" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="8ac9b467-3d44-4f97-bf66-751ece491083" >
+		<http:request-connection protocol="HTTPS" host="jsonplaceholder.typicode.com" />
+	</http:request-config>
+	<flow name="main-flow" doc:id="29ecc1fe-ddbd-4f2f-9703-22191715ee84" >
+		<http:listener doc:name="Listener " doc:id="19292221-a6f8-4154-b4a0-a8f428e0e7ad" config-ref="HTTP_Listener_config" path="/flow-exception-handling" allowedMethods="POST">
+			<http:error-response statusCode="#[error.cause.errorMessage.attributes.statusCode]">
+				<http:body><![CDATA[#[output application/json --- payload]]]></http:body>
+			</http:error-response>
+		</http:listener>
+		<set-variable value="#[payload]" doc:name="inputPayload" doc:id="3a5c80da-071d-4570-be50-ac5736a69585" variableName="inputPayload" />
+		<set-payload value='#["Success - Started Main Flow"]' doc:name="Success - Started Main Flow" doc:id="2cdca5eb-dcdc-4210-8d94-061a97f3d01c" />
+		<flow-ref doc:name="Child-subFlow" doc:id="30af9297-a398-4f34-8a33-81703b544e89" name="Child-subFlow" />
+		<set-payload value='#["Success - Finished Main Flow"]' doc:name="Success - Finished Main Flow" doc:id="b2664568-7e95-452b-834d-9305440bb16c" />
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="d393f079-7b23-456f-a1ce-69d566effb5c" >
+				<set-payload value='#["Error - Main Flow"]' doc:name="Error - Main Flow" doc:id="a1eedd14-f339-4ac2-9032-ec160bcd3893" />
+			</on-error-continue>
+		</error-handler>
+	</flow>
+	<!--  <sub-flow name="ChildSub-flow" doc:id="0d5cb627-375f-4972-a88a-c60fa8f54704" >
+		<validation:is-number doc:name="Is number" doc:id="09876d1d-b838-4527-99b9-3d335b5858bc" value='#[payload."employee_id"]' minValue="1" maxValue="1000" numberType="INTEGER" message='#["employee_id type mismatch"]'/>
+		<set-payload value='#["Success - Finished Child Sub Flow"]' doc:name='Success - Finished Child Sub Flow' doc:id="e6c2f22a-c885-4028-9228-c843af4584b4" />
+	</sub-flow> -->
+	<sub-flow name="Child-subFlow" doc:id="0ede0982-437c-4989-a1f0-a175bb4e0400" >
+		<validation:is-number numberType="INTEGER" doc:name="Is number" doc:id="c00dc891-9b63-485f-aea0-26a9475e2d38" value='#[vars.inputPayload."employee_id"]' minValue="1" maxValue="1000" message='#["employee_id type mismatch"]' />
+		<set-payload value='#["Success - Finished Child Sub Flow"]' doc:name="Success - Finished Child Sub Flow" doc:id="3f880e0e-fab9-4494-a89d-1094d17c9ee0" />
+	</sub-flow>
+	<flow name="Child-flow" doc:id="3d139682-98f6-45c6-aad3-b97c9201eb34" >
+		<validation:is-number numberType="INTEGER" doc:name="Is number" doc:id="082a48ff-8c23-43bd-93cf-ca0ad5d82417" value='#[vars.inputPayload."employee_id"]' minValue="1" maxValue="1000" message='#["employee_id type mismatch"]' />
+		<set-payload value='#["Success - Finished Child Flow"]' doc:name="Success - Finished Child Flow" doc:id="38161e5a-e1ff-4d13-aae6-00712c232f21" />
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="63e785c1-817b-4b27-9a6a-105ec9f1d0a4" >
+				<set-payload value='#["Error - Child Flow"]' doc:name="Error - Child Flow" doc:id="ce78fb6d-5b31-4050-b805-4b8a9a6cb4ef" />
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+</mule>
